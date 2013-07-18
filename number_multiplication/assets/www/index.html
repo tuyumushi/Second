@@ -4,23 +4,194 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<!-- 
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
+		 -->
+		<script src="EaselJS/lib/easeljs-0.6.1.min.js"></script>
+		<script src="PreloadJS/lib/preloadjs-0.3.1.min.js"></script>
+		<script src="TweenJS/lib/tweenjs-0.4.1.min.js"></script>
+
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+
+        
         <script type="text/javascript">
-            app.initialize();
-        </script>
+        var canvas;
+	var stage;
+        
+	var update=false;	
+	
+        var bitmap0;
+        var bitmap1;
+        var bitmap2;
+        
+        function init() {
+			canvas = document.getElementById("Canvas");
+			stage = new createjs.Stage(canvas);
+			if (createjs.Touch.isSupported()) {
+    			createjs.Touch.enable(stage);
+  			}
+  			
+  			var hit1 = new createjs.Shape();
+    			hit1.graphics.beginFill("#ff0000").drawRect(20,0,184,250);
+			hit1.name="hit1";
+			
+			
+			var hit2 = new createjs.Shape();
+			hit2.graphics.beginFill("#ff0000").drawRect(250,0,184,250);
+			hit2.name="hit2";
+			
+			//creating bitmap images object
+			bitmapA0 = new createjs.Bitmap( 'img/zero.png' );
+			bitmapA0.name = 0;
+			bitmapA1 = new createjs.Bitmap( 'img/one.png' );
+			bitmapA1.name = 1;
+			bitmapA2 = new createjs.Bitmap( 'img/two.png' );
+			bitmapA2.name = 2;
+			bitmapA3 = new createjs.Bitmap( 'img/three.png' );
+			bitmapA3.name = 3;
+	
+			bitmapB0 = new createjs.Bitmap( 'img/zero.png' );
+			bitmapB0.name = 0;
+			bitmapB1 = new createjs.Bitmap( 'img/one.png' );
+			bitmapB1.name = 1;
+			bitmapB2 = new createjs.Bitmap( 'img/two.png' );
+			bitmapB2.name = 2;
+			bitmapB3 = new createjs.Bitmap( 'img/three.png' );
+			bitmapB3.name = 3;
+			
+			bitmapButton = new createjs.Bitmap('img/daisy.png');
+
+			// stage bitmap position
+			bitmapA0.x = 20;
+			bitmapA1.x = 250;
+			bitmapA2.x = 480;
+			bitmapA3.x = 700
+			bitmapA0.y = 300; 
+			bitmapA1.y = 300;
+			bitmapA2.y = 300;
+			bitmapA3.y = 300;
+
+			bitmapB0.x = 20;
+			bitmapB1.x = 250;
+			bitmapB2.x = 480;
+			bitmapB3.x = 700
+			bitmapB0.y = 300; 
+			bitmapB1.y = 300;
+			bitmapB2.y = 300;
+			bitmapB3.y = 300;
+			
+			bitmapButton.x = canvas.width-500;
+			bitmapButton.y = 0;
+
+			var bitmapsA = new Array();
+			bitmapsA.push(bitmapA0,bitmapA1,bitmapA2,bitmapA3);
+			
+			var whichBitmapNumberA = Math.round(Math.random()*3);
+			bitmapsA[whichBitmapNumberA].x = 20;
+			bitmapsA[whichBitmapNumberA].y = 0;
+
+			var bitmapsB = new Array();
+			bitmapsB.push(bitmapB0,bitmapB1,bitmapB2,bitmapB3);			
+			
+			//var whichBitmapNumberB = Math.round(Math.random()*3);
+			var whichBitmapNumberB = Math.round(Math.random()*3);
+			window.alert(whichBitmapNumberB);
+			bitmapsB[whichBitmapNumberB].x = 250;
+			bitmapsB[whichBitmapNumberB].y = 0;
+		
+			stage.addChild(hit1,hit2,bitmapA0,bitmapA1,bitmapA2,bitmapA3,bitmapB0,bitmapB1,bitmapB2,bitmapB3,bitmapButton);
+
+			bitmapA0.addEventListener("mousedown", bitmap_mousedown);
+
+			//hit1.addEventListener("click", hit_clicked);
+			bitmapButton.addEventListener("click", hitSlideButton);			
+			
+  			// call update on the stage to make it render the current display list to the canvas
+			stage.update();
+			
+  			//create ticker object and add event handler 
+			//createjs.Ticker.setFPS(20);
+			//createjs.Ticker.useRAF = true;
+			createjs.Ticker.addEventListener("tick", handleTick);
+
+  		}
+  		
+  		function bitmap_mousedown(e){
+  			e.onMouseMove = function(ev){
+  				e.target.x = ev.stageX;
+  				e.target.y = ev.stageY;
+	  			e.target.regX = e.target.image.width/2;
+  				e.target.regY = e.target.image.height/2;  			
+  			}
+/*  			
+  			e.onMouseUp = function(ev){
+
+			if(objects[1].name == "Target1" && ev.target.name == 0)
+			{
+				//window.alert(object[1]);
+				ev.target.x = bitmapTarget1.x;
+				ev.target.y = bitmapTarget1.y;
+			}
+			if(objects[1].name == "Target2" && ev.target.name == 1)
+			{
+				//window.alert(object[1]);
+				ev.target.x = bitmapTarget2.x;
+				ev.target.y = bitmapTarget2.y;
+			}
+
+			if(objects[1].name == "Target3" && ev.target.name == 2)
+			{
+				//window.alert(objects[1]);
+				//window.alert(ev.target.name);
+				ev.target.x = bitmapTarget3.x;
+				ev.target.y = bitmapTarget3.y;
+			}
+			*/
+			//stage.update();
+		}
+		
+		function hitSlideButton(){
+			//window.alert("in hitSlideButton function. . .");
+			//window.alert(stage.x.toString());
+			//for(var k=canvas.width; k>0; k--){			
+			//	stage.x -= 1;
+			//}
+			update = true;
+			
+		}
+
+  		function hit_clicked(){
+  			window.alert("in hit_clicked function. . .");
+  			stage.update();
+  		}
+  		
+  		function handleTick() {
+  			//if(update){
+  			//update = false;
+  			//stage.update(); 
+ 			//}
+			if(update){
+				if(stage.x >-800){
+					stage.x -= 10;
+				}
+				
+			}
+  			stage.update();
+			//update = false;
+  		}
+  		
+
+        </script>        
+    </head>
+        
+    <body onload="init();">        
+        <div class="canvasHolder">
+		<!-- 
+		<canvas id="testCanvas" width="960" height="400"></canvas>
+	 	 -->
+	 	<canvas id="Canvas" width="1260" height="680"></canvas>
+	</div>
         
     </body>
 </html>
