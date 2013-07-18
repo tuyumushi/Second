@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<!-- 
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+		 -->
+		<script src="EaselJS/lib/easeljs-0.6.1.min.js"></script>
+		<script src="PreloadJS/lib/preloadjs-0.3.1.min.js"></script>
+		<script src="TweenJS/lib/tweenjs-0.4.1.min.js"></script>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        
+        <script type="text/javascript">
+
+	//var	
+        
+        function init() {
+			canvas = document.getElementById("Canvas");
+			stage = new createjs.Stage(canvas);
+			if (createjs.Touch.isSupported()) {
+    			createjs.Touch.enable(stage);
+  			}
+  			
+  			// add hitareas and bitmaps to stage
+			stage.addChild();
+
+			bitmapA0.addEventListener("mousedown", bitmap_mousedown);
+
+			//hit1.addEventListener("click", hit_clicked);
+			
+  			// call update on the stage to make it render the current display list to the canvas
+			stage.update();
+			
+  			//create ticker object and add event handler 
+			//createjs.Ticker.setFPS(20);
+			//createjs.Ticker.useRAF = true;
+			createjs.Ticker.addEventListener("tick", handleTick);
+
+  		}
+  		
+  		function bitmap_mousedown(e){
+  			e.onMouseMove = function(ev){
+  				e.target.x = ev.stageX;
+  				e.target.y = ev.stageY;
+	  			e.target.regX = e.target.image.width/2;
+  				e.target.regY = e.target.image.height/2;  			
+  			}
+		}
+	
+  		function hit_clicked(){
+  			window.alert("in handleTick function. . .");
+  			stage.update();
+  		}
+  		
+  		function handleTick() {
+  			//if(update){
+  			//update = false;
+  			//stage.update(); 
+ 			//}
+  			stage.update();
+  		}
+  		
+
+        </script>        
+    </head>
+        
+    <body onload="init();">        
+        <div class="canvasHolder">
+		<!-- 
+		<canvas id="testCanvas" width="960" height="400"></canvas>
+	 	 -->
+	 	<canvas id="Canvas" width="1260" height="680"></canvas>
+	</div>
+        
+    </body>
+</html>

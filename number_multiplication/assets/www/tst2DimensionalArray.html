@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<!-- 
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+		 -->
+	<script src="EaselJS/lib/easeljs-0.6.1.min.js"></script>
+	<script src="PreloadJS/lib/preloadjs-0.3.1.min.js"></script>
+	<script src="TweenJS/lib/tweenjs-0.4.1.min.js"></script>
+	<!--
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        -->
+        <script type="text/javascript">
+
+	// declare variables var
+	var canvas, canvas2, stage, stage2;
+
+	var blocks = [[],[],[]];
+	var twoBytwo = [[1,2],[3,4],[5,6]];
+	var numbers = [[1,2,3],[4,5,6],[7,8,9]];
+
+	var bitmap;
+
+        function init() {
+			
+
+			canvas2 = document.getElementById("Canvas2");
+			stage2 = new createjs.Stage(canvas2);
+			if (createjs.Touch.isSupported()) {
+    			createjs.Touch.enable(stage2);
+  			}
+  			
+			//window.alert(blocks[1][0]); // 1
+			//var blocks = [[1,2,3],[4,5,6],[7,8,9]];
+			var hit1Displayed = 3;
+			var hit2Displayed = 3;
+			for(var i=0;i<hit2Displayed;i++){
+ 				for(var j=0;j<hit1Displayed;j++){
+					// create border of the each blocks
+					var bgGraphics = new createjs.Graphics();
+					bgGraphics.setStrokeStyle(5);
+        				bgGraphics.beginStroke("#00FF00");
+
+  					blocks[i][j] = new createjs.Shape(bgGraphics);  					blocks[i][j].graphics.beginFill("#ff"+j+"07A").drawRect(500 + (50*i),0+(50*j),50,50);			
+
+					if(hit1Displayed <= hit2Displayed){
+						//creating text object			
+						var txt1 = new createjs.Text(numbers[j][i], "18px Arial");
+						//window.alert(txt1);
+					}else{
+						//creating text object			
+						var txt1 = new createjs.Text(numbers[i][j], "18px Arial");
+
+					}
+					if(hit1Displayed==2 && hit2Displayed==2){
+						var txt1 = new createjs.Text(twoBytwo[j][i], "18px Arial");
+					}
+
+					// position it on stage:
+					txt1.x = 500+20+(50*i);
+					txt1.y = 0+15  +(50*j);
+
+  					stage2.addChild(blocks[i][j],txt1);
+				}
+			}
+
+			var blocksB=[[1,2,3],[4,5,6],[7,8,9]];
+			for(var k=0;k<hit2Displayed;k++){
+ 				for(var l=0;l<hit1Displayed;l++){
+					// create border of the each blocks
+					var bgGraphics = new createjs.Graphics();
+					bgGraphics.setStrokeStyle(5);
+        				bgGraphics.beginStroke("#00FF00");
+
+  					blocksB[k][l] = new createjs.Shape(bgGraphics);
+					//blocks[i][j].name = (i+1)*(j+1);
+					blocksB[k][l].name = (k+1)*(l+1);
+					blocksB[k][l].graphics.beginFill("#ff"+j+"07A").drawRect(500 + (50*k),180+(50*l),50,50);		
+					//creating text object			
+					var txt2 = new createjs.Text(blocksB[k][l].name, "18px Arial");
+					// position it on stage:
+					txt2.x = 500+20+(50*k);
+					txt2.y = 180+15+(50*l);
+
+  					stage2.addChild(blocksB[k][l],txt2);
+				}
+			}
+		
+  			// add hitareas and bitmaps to stage
+			//stage.addChild();
+
+			//bitmapA0.addEventListener("mousedown", bitmap_mousedown);
+			stage2.addEventListener("click", stage2_clicked);
+			//hit1.addEventListener("click", hit_clicked);
+			
+  			// call update on the stage to make it render the current display list to the canvas
+			//stage.update();
+			stage2.update();		
+  			//create ticker object and add event handler 
+			//createjs.Ticker.setFPS(20);
+			//createjs.Ticker.useRAF = true;
+			//createjs.Ticker.addEventListener("tick", handleTick);
+			
+			
+			canvas = document.getElementById("Canvas");
+			stage = new createjs.Stage(canvas);
+			bitmap = new createjs.Bitmap("img/one.png");
+			bitmap.x=0;
+			bitmap.y=0;
+			
+			stage.addChild(bitmap);
+			bitmap.addEventListener("click", hit_clicked); 
+			
+			stage.update();
+			//stage.clear();
+			//stage.enableDOMEvents(false);
+ 			//stage.canvas = Canvas2;
+ 			//stage.enableDOMEvents(true);
+			
+  		}
+
+		function stage2_clicked(ev){
+			window.alert("in stage2_clicked function");
+			stage2.x = -300;
+			stage2.y = 0;
+			stage2.scaleX = stage2.scaleY = 1.5;
+			stage2.update();
+		}  		
+
+  		function bitmap_mousedown(e){
+  			e.onMouseMove = function(ev){
+  				e.target.x = ev.stageX;
+  				e.target.y = ev.stageY;
+	  			e.target.regX = e.target.image.width/2;
+  				e.target.regY = e.target.image.height/2;  			
+  			}
+		}
+	
+  		function hit_clicked(){
+  			window.alert("in hit_clicked function. . .");
+			bitmap.scaleX = bitmap.scaleY = 2;
+  			stage.update();
+  		}
+  		
+  		function handleTick() {
+  			//if(update){
+  			//update = false;
+  			//stage.update(); 
+ 			//}
+  			stage.update();
+  		}
+  		
+
+        </script>        
+    </head>
+         
+    <body onload="init();">        
+        <div class="canvasHolder" style="position: relative;">
+		<!--	
+		<canvas id="Canvas" width="1260" height="680" 
+			style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+		-->
+		<canvas id="Canvas2" width="1000" height="500" 
+			style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+	</div> 
+    </body>
+</html>
