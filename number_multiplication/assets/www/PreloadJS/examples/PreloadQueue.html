@@ -124,8 +124,8 @@
             ];
 
             // Create a preloader. There is no manifest added to it up-front, we will add items on-demand.
-            preload = new createjs.LoadQueue(true, "assets/");
-
+            // preload = new createjs.LoadQueue(true, "assets/");
+	    preload = new createjs.LoadQueue(false, "assets/");
             // Use this instead to use tag loading
             //preload = new createjs.LoadQueue(false);
 

@@ -106,9 +106,10 @@
             //preload = new createjs.LoadQueue();
 
             // Use this instead to favor tag loading
-            preload = new createjs.LoadQueue(true, "assets/");
-            createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
-            preload.installPlugin(createjs.Sound);
+            // preload = new createjs.LoadQueue(true, "assets/");
+            preload = new createjs.LoadQueue(false, "assets/");
+            //createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
+            //preload.installPlugin(createjs.Sound);
             preload.addEventListener("fileload", handleFileLoaded);
             preload.addEventListener("error", handleFileError);
         }

@@ -1,197 +1,302 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-		<!-- 
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-		 -->
-		<script src="EaselJS/lib/easeljs-0.6.1.min.js"></script>
-		<script src="PreloadJS/lib/preloadjs-0.3.1.min.js"></script>
-		<script src="TweenJS/lib/tweenjs-0.4.1.min.js"></script>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 
-        <script type="text/javascript" src="cordova.js"></script>
+<script src="EaselJS/lib/easeljs-0.6.1.min.js"></script>
+<script src="PreloadJS/lib/preloadjs-0.3.1.min.js"></script>
+<script src="TweenJS/lib/tweenjs-0.4.1.min.js"></script>
+<!-- 
+		<script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+ -->
+<script type="text/javascript">
 
-        
-        <script type="text/javascript">
-        var canvas;
-	var stage;
-        
-	var update=false;	
-	
-        var bitmap0;
-        var bitmap1;
-        var bitmap2;
-        
-        function init() {
-			canvas = document.getElementById("Canvas");
-			stage = new createjs.Stage(canvas);
-			if (createjs.Touch.isSupported()) {
-    			createjs.Touch.enable(stage);
+ 	var canvas;
+  	var stage;
+  	var container;
+  	var containerD1, containerD2;
+  	var containerRight1, containerRight2, containerRight3, containerRight4, containerRight5;
+  	var bitmap1, bitmapDish, bitmapDish2;
+  	var bitmapRight1, bitmapRight2, bitmapRight3, bitmapRight4, bitmapRight5; 
+  	var cntBitmaps=0, cntBitmaps2=0;
+	var dishXPosition = 0;
+	var dishYPosition = 500;
+	var image1, image2;
+	var counterFirstRun;
+
+
+			
+    function init() {
+
+		canvas = document.getElementById("Canvas");
+		stage = new createjs.Stage(canvas);
+
+		if (createjs.Touch.isSupported()) {
+    		createjs.Touch.enable(stage);
+  		}
+		
+		counterFirstRun = 0;
+		
+		manifest = [
+                {src:"strawberry.png", id:"strawberry"},
+                {src:"dish.png", id:"dish"},
+        ];
+
+        preload = new createjs.LoadQueue(false, "img/");
+        preload.loadManifest(manifest);
+
+	    preload.addEventListener("fileload", handleFileLoad);		    
+				
+  		//create ticker object and add event handler 
+		createjs.Ticker.setFPS(50);
+		createjs.Ticker.useRAF = true;
+		createjs.Ticker.addEventListener("tick", handleTick);
+
+  	}
+  	
+    function handleFileLoad(event) {
+		// alert("I am in handleFileLoad function");
+        // image1 = event.result;
+
+        image1 = preload.getResult("strawberry");
+		
+
+    if(counterFirstRun == 0) {
+		
+  		container = new createjs.Container();	
+  		container.name = "L1";
+  		containerD1 = new createjs.Container();
+		containerD2 = new createjs.Container();
+		containerRight1 = new createjs.Container();
+		containerRight1.name = "R1";
+		containerRight2 = new createjs.Container();
+		containerRight2.name = "R2";
+		containerRight3 = new createjs.Container();
+		containerRight3.name = "R3";
+		containerRight4 = new createjs.Container();
+		containerRight4.name = "R4";
+		containerRight5 = new createjs.Container();
+		containerRight5.name = "R5";
+
+		cntBitmaps = (Math.round(Math.random()*3)+1);
+		cntBitmaps2 = 5 - cntBitmaps;
+
+        for (var i=0; i<cntBitmaps; i++) {
+	    	bitmap1 = new createjs.Bitmap(image1);
+	    	bitmap1.x = bitmap1.image.width * i;
+  			bitmap1.y = 0;
+  			container.addChild(bitmap1);					 
+  		}
+  		
+   		for (var i=0; i<1; i++) {
+  			bitmapRight1 = new createjs.Bitmap(image1);
+  			bitmapRight1.x = (70+bitmap1.image.width * cntBitmaps);
+  			bitmapRight1.y = 0;
+  			containerRight1.addChild(bitmapRight1);
+  		}
+  
+  		// alert("bitmap1 width is: "+bitmap1.image.width);
+  		// alert("count bitmaps is: "+ cntBitmaps);
+  		
+  		for (var i=0; i<2; i++) {
+  			bitmapRight2 = new createjs.Bitmap(image1);
+  			bitmapRight2.x = (70+bitmap1.image.width * cntBitmaps) + (bitmap1.image.width*i);
+  			bitmapRight2.y = 90;
+  			containerRight2.addChild(bitmapRight2);
+  		}
+  		for (var i=0; i<3; i++) {
+  			bitmapRight3 = new createjs.Bitmap(image1);
+  			bitmapRight3.x = (70+bitmap1.image.width * cntBitmaps) + (bitmap1.image.width*i);
+  			bitmapRight3.y = 90 * 2;
+  			containerRight3.addChild(bitmapRight3);
+  		}
+  		for (var i=0; i<4; i++) {
+  			bitmapRight4 = new createjs.Bitmap(image1);
+  			bitmapRight4.x = (70+bitmap1.image.width * cntBitmaps) + (bitmap1.image.width*i);
+  			bitmapRight4.y = 90 * 3;
+  			containerRight4.addChild(bitmapRight4);
+  		}	
+		stage.addChild(container, containerRight1, containerRight2, containerRight3, containerRight4);
+	    container.addEventListener("mousedown", bitmap_mousedown);
+		containerRight1.addEventListener("mousedown", bitmap_mousedown);
+		containerRight2.addEventListener("mousedown", bitmap_mousedown);
+		containerRight3.addEventListener("mousedown", bitmap_mousedown);
+		containerRight4.addEventListener("mousedown", bitmap_mousedown);
+		
+		counterFirstRun = counterFirstRun + 1;
+	}
+	else{
+  	  	// add dishes (casting box items) with number
+  	  	var image2 = preload.getResult("dish");
+  	  	for (var j=0; j<cntBitmaps; j++) {
+  	  		bitmapDish = new createjs.Bitmap(image2);
+  	  		bitmapDish.x = 71*j;
+  	  		bitmapDish.y = dishYPosition;
+  	  		bitmapDish.name = 99;
+  	  		containerD1.addChild(bitmapDish);
+  	  	}
+  	  	// add second dishes (casting items) with number
+  	  	for (var k=0; k<cntBitmaps2; k++) {
+  	  		bitmapDish2 = new createjs.Bitmap(image2);
+  	  		bitmapDish2.x = (cntBitmaps*71) + (71*k);
+  	  		bitmapDish2.y = dishYPosition;
+  	  		bitmapDish2.name = 98;
+  	  		containerD2.addChild(bitmapDish2);
+  	  	}
+
+	    // stage.addChild(containerD2, containerD1, container, containerRight1, containerRight2, containerRight3, containerRight4);
+		
+		stage.addChildAt(containerD2,0);
+		stage.addChildAt(containerD1,1);
+	}	
+	    // stage.update();
+    }			
+
+  	function bitmap_mousedown(e){
+  		var ev;
+  		
+  		e.onMouseMove = function(ev){
+  			if(e.target.name == "L1" ){
+	  			e.target.regX = (container.getChildAt(0).image.width * cntBitmaps) / 2;
+	  			e.target.regY = (container.getChildAt(0).image.height) / 2;
   			}
   			
-  			var hit1 = new createjs.Shape();
-    			hit1.graphics.beginFill("#ff0000").drawRect(20,0,184,250);
-			hit1.name="hit1";
-			
-			
-			var hit2 = new createjs.Shape();
-			hit2.graphics.beginFill("#ff0000").drawRect(250,0,184,250);
-			hit2.name="hit2";
-			
-			//creating bitmap images object
-			bitmapA0 = new createjs.Bitmap( 'img/zero.png' );
-			bitmapA0.name = 0;
-			bitmapA1 = new createjs.Bitmap( 'img/one.png' );
-			bitmapA1.name = 1;
-			bitmapA2 = new createjs.Bitmap( 'img/two.png' );
-			bitmapA2.name = 2;
-			bitmapA3 = new createjs.Bitmap( 'img/three.png' );
-			bitmapA3.name = 3;
-	
-			bitmapB0 = new createjs.Bitmap( 'img/zero.png' );
-			bitmapB0.name = 0;
-			bitmapB1 = new createjs.Bitmap( 'img/one.png' );
-			bitmapB1.name = 1;
-			bitmapB2 = new createjs.Bitmap( 'img/two.png' );
-			bitmapB2.name = 2;
-			bitmapB3 = new createjs.Bitmap( 'img/three.png' );
-			bitmapB3.name = 3;
-			
-			bitmapButton = new createjs.Bitmap('img/daisy.png');
-
-			// stage bitmap position
-			bitmapA0.x = 20;
-			bitmapA1.x = 250;
-			bitmapA2.x = 480;
-			bitmapA3.x = 700
-			bitmapA0.y = 300; 
-			bitmapA1.y = 300;
-			bitmapA2.y = 300;
-			bitmapA3.y = 300;
-
-			bitmapB0.x = 20;
-			bitmapB1.x = 250;
-			bitmapB2.x = 480;
-			bitmapB3.x = 700
-			bitmapB0.y = 300; 
-			bitmapB1.y = 300;
-			bitmapB2.y = 300;
-			bitmapB3.y = 300;
-			
-			bitmapButton.x = canvas.width-500;
-			bitmapButton.y = 0;
-
-			var bitmapsA = new Array();
-			bitmapsA.push(bitmapA0,bitmapA1,bitmapA2,bitmapA3);
-			
-			var whichBitmapNumberA = Math.round(Math.random()*3);
-			bitmapsA[whichBitmapNumberA].x = 20;
-			bitmapsA[whichBitmapNumberA].y = 0;
-
-			var bitmapsB = new Array();
-			bitmapsB.push(bitmapB0,bitmapB1,bitmapB2,bitmapB3);			
-			
-			//var whichBitmapNumberB = Math.round(Math.random()*3);
-			var whichBitmapNumberB = Math.round(Math.random()*3);
-			window.alert(whichBitmapNumberB);
-			bitmapsB[whichBitmapNumberB].x = 250;
-			bitmapsB[whichBitmapNumberB].y = 0;
-		
-			stage.addChild(hit1,hit2,bitmapA0,bitmapA1,bitmapA2,bitmapA3,bitmapB0,bitmapB1,bitmapB2,bitmapB3,bitmapButton);
-
-			bitmapA0.addEventListener("mousedown", bitmap_mousedown);
-
-			//hit1.addEventListener("click", hit_clicked);
-			bitmapButton.addEventListener("click", hitSlideButton);			
-			
-  			// call update on the stage to make it render the current display list to the canvas
-			stage.update();
-			
-  			//create ticker object and add event handler 
-			//createjs.Ticker.setFPS(20);
-			//createjs.Ticker.useRAF = true;
-			createjs.Ticker.addEventListener("tick", handleTick);
-
-  		}
-  		
-  		function bitmap_mousedown(e){
-  			e.onMouseMove = function(ev){
-  				e.target.x = ev.stageX;
-  				e.target.y = ev.stageY;
-	  			e.target.regX = e.target.image.width/2;
-  				e.target.regY = e.target.image.height/2;  			
+  			if(e.target.name == "R1"){
+  				e.target.regX = bitmapRight1.x + 35;
+  				e.target.regY = (containerRight1.getChildAt(0).image.height) / 2;
   			}
-/*  			
-  			e.onMouseUp = function(ev){
-
-			if(objects[1].name == "Target1" && ev.target.name == 0)
-			{
-				//window.alert(object[1]);
-				ev.target.x = bitmapTarget1.x;
-				ev.target.y = bitmapTarget1.y;
-			}
-			if(objects[1].name == "Target2" && ev.target.name == 1)
-			{
-				//window.alert(object[1]);
-				ev.target.x = bitmapTarget2.x;
-				ev.target.y = bitmapTarget2.y;
-			}
-
-			if(objects[1].name == "Target3" && ev.target.name == 2)
-			{
-				//window.alert(objects[1]);
-				//window.alert(ev.target.name);
-				ev.target.x = bitmapTarget3.x;
-				ev.target.y = bitmapTarget3.y;
-			}
-			*/
+  			if(e.target.name == "R2"){
+  				e.target.regX = bitmapRight2.x-30;
+  				//e.target.regY = (containerRight2.getChildAt(0).image.height)+35;
+  				e.target.regY = 90+35;
+  			}
+  			if(e.target.name == "R3"){
+  				e.target.regX = bitmapRight3.x-30;
+  				e.target.regY = (90*2)+35;
+  			}
+  			if(e.target.name == "R4"){
+  				e.target.regX = bitmapRight3.x-30;
+  				e.target.regY = (90*3)+35;
+  			}
+  			if(e.target.name == "R5"){
+  				e.target.regX = bitmapRight3.x-30;
+  				e.target.regY = (90*4)+35;
+  			}
+  			e.target.x = ev.stageX;
+  			e.target.y = ev.stageY;
+  		}
+  		
+  		e.onMouseUp = function(e){
+			var objects = new Array();
+			var e2 = e;
+            objects = stage.getObjectsUnderPoint(e2.stageX, e2.stageY); 
+			try{
+				for(var cntObjects = 0; cntObjects < 2; cntObjects ++){
+					if((!objects[cntObjects]) || (objects[cntObjects].name==null)){
+					} else{
+						if((objects[0].name == 99)|| (objects[1].name == 99))
+						{
+							// window.alert("step into coordinate function ...");
+							container.regX = 0;
+							container.regY = 0;
+							container.x = 10;
+							container.y = dishYPosition - bitmap1.image.height/2;
+						}	 
+						if((objects[0].name == 98) || (objects[1].name == 98))
+						{
+							if(e2.target.name=="R1"){
+								if(cntBitmaps2 == 1){							
+									e2.target.regX = 0;
+									e2.target.regY = 90-35;
+									e2.target.x = -60;
+									e2.target.y = dishYPosition;
+									window.alert("よくできました！おみごとです。");
+								}else{
+									window.alert("こうだいくん？ちょっとちがいます？ おさらのかずをよくみてね");
+								}									
+							}
+							if(e2.target.name=="R2"){
+								if(cntBitmaps2 == 2){
+									e2.target.regX = 0;
+									e2.target.regY = (90*2)-35;
+									e2.target.x = -60;
+									e2.target.y = dishYPosition;
+									window.alert("よくできました！おみごとです。");
+								}else{
+									window.alert("こうだいくん？ちょっとちがいます？ おさらのかずをよくみてね");
+								}
+							}
+							if(e2.target.name=="R3"){
+								if(cntBitmaps2 == 3){
+									e2.target.regX = 0;
+									e2.target.regY = (90*3)-35;
+									e2.target.x = -60;
+									e2.target.y = dishYPosition;
+									window.alert("よくできました！おみごとです。");
+								}else{
+									window.alert("こうだいくん？ちょっとちがいます？ おさらのかずをよくみてね");
+								}
+							}
+							if(e2.target.name=="R4"){
+								if(cntBitmaps2 == 4){
+									e2.target.regX = 0;
+									e2.target.regY = (90*4)-35;
+									e2.target.x = -60;
+									e2.target.y = dishYPosition;
+									window.alert("よくできました！おみごとです。");
+								}else{
+									window.alert("こうだいくん？ちょっとちがいます？ おさらのかずをよくみてね");
+								}	
+							}
+							if(e2.target.name=="R5"){
+								if(cntBitmaps2 == 5){
+									e2.target.regX = 0;
+									e2.target.regY = (90*5)-35;
+									e2.target.x = -60;
+									e2.target.y = dishYPosition;
+									window.alert("よくできました！おみごとです。");
+								}else{
+									window.alert("こうだいくん？ちょっとちがいます？ おさらのかずをよくみてね");
+								}								
+							}
+						}
+					}
+				} 
+  			}
+			catch(err){
+  				// window.alert("Catch err: " + err.message);
+  			}		
+  			finally{	
 			//stage.update();
-		}
-		
-		function hitSlideButton(){
-			//window.alert("in hitSlideButton function. . .");
-			//window.alert(stage.x.toString());
-			//for(var k=canvas.width; k>0; k--){			
-			//	stage.x -= 1;
-			//}
-			update = true;
-			
-		}
-
-  		function hit_clicked(){
-  			window.alert("in hit_clicked function. . .");
-  			stage.update();
-  		}
-  		
-  		function handleTick() {
-  			//if(update){
-  			//update = false;
-  			//stage.update(); 
- 			//}
-			if(update){
-				if(stage.x >-800){
-					stage.x -= 10;
-				}
-				
 			}
-  			stage.update();
-			//update = false;
-  		}
-  		
 
-        </script>        
-    </head>
-        
-    <body onload="init();">        
-        <div class="canvasHolder">
-		<!-- 
-		<canvas id="testCanvas" width="960" height="400"></canvas>
-	 	 -->
-	 	<canvas id="Canvas" width="1260" height="680"></canvas>
+		}
+  		
+	}
+
+	  	function handleTick() {
+	  		//if(update){
+	  		//update = false;
+	  		//stage.update(); 
+	 		//}
+	  		stage.update();
+	  	}
+  		
+</script>
+
+</head>
+
+<body onload="init();">
+	<div style="float: left;">
+	<h3>左と右のいちごをあわせて5のまとまりをつくりましょう！</h3> 
 	</div>
-        
-    </body>
+	<div style="float: right;">
+	<button type="button" onclick="init()">もういっかいやる</button>
+	</div>
+	<canvas id="Canvas" height="650" width="920"
+		style="border: 3px solid #000000;"> </canvas>
+</body>
 </html>
